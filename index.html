@@ -94,16 +94,12 @@
             return `rgb(${r},${g},${b})`;
         }
 
-        function getCode()  {
-            return draw(5)
-        }
-
         //点击切换验证码
         $('#code').on('click', function () {
-            getCode();
+            draw(5);
         });
 
-        console.log(getCode());
+        console.log(draw(5));
     });
 
 </script>
