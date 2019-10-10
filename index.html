@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas验证码</title>
+    <style>
+        #canvas {
+            vertical-align: middle;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="code">
+    <canvas id="canvas" width="150" height="50"></canvas>
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+
+    $(function () {
+        let str = '';
+        let canvas = document.getElementById('canvas');
+        let w = $(canvas).width();
+        let h = $(canvas).height();
+        let ctx = canvas.getContext('2d');
+        canvas.width = w;
+        canvas.height = h;
+        let codeStr = 'a,b,c,d,e,f,g,h,i,j,k,m,n,p,q,r,s,t,u,v,w,x,y,z,A,B,C,E,F,G,H,J,K,L,M,N,P,Q,R,S,T,W,X,Y,Z,1,2,3,4,5,6,7,8,9,0';
+        let codeArr = codeStr.split(',');
+        let codeLength = codeArr.length;
+
+        //生成并渲染验证码
+        function draw(num) {
+            //清除画布
+            ctx.clearRect(0,0,w,h);
+
+            //随机渲染数字或字母
+            for (let i = 0; i < num; i++) {
+                //获取随机索引
+                let index = Math.floor(Math.random()*codeLength);
+                //获取随机内容
+                let text = codeArr[index];
+                str += text.toLowerCase();
+                //产生一个随机弧度
+                let deg = Math.random() - 0.5;
+                //文字在canvas上的坐标
+                let x = 25 + i * 20;
+                let y = 30 + Math.random() * 10;
+
+                //渲染文字内容
+                ctx.font = 'bold 30px 微软雅黑';
+                ctx.translate(x, y);
+                ctx.rotate(deg);
+                ctx.fillStyle = getColor();
+                ctx.fillText(text, 0, 0);
+
+                ctx.rotate(-deg);
+                ctx.translate(-x, -y);
+            }
+            //随机画直线
+            for (let i = 0; i <= 8; i++) {
+                ctx.strokeStyle = getColor();
+                ctx.beginPath();
+                ctx.moveTo(Math.random()*w, Math.random()*h);
+                ctx.lineTo(Math.random()*w, Math.random()*h);
+                ctx.stroke();
+            }
+            //随机显示小点
+            for (let i = 0; i <= 160; i++) {
+                ctx.strokeStyle = getColor();
+                ctx.beginPath();
+                let x = Math.random() * w;
+                let y = Math.random() * h;
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + 1, y + 1);
+                ctx.stroke();
+            }
+
+            return {
+                code: str,
+                url: canvas.toDataURL()
+            }
+        }
+
+        //获取随机颜色值
+        function getColor() {
+            let r = Math.floor(Math.random()*256);
+            let g = Math.floor(Math.random()*256);
+            let b = Math.floor(Math.random()*256);
+
+            return `rgb(${r},${g},${b})`;
+        }
+
+        function getCode()  {
+            return draw(5)
+        }
+
+        //点击切换验证码
+        $('#code').on('click', function () {
+            getCode();
+        });
+
+        console.log(getCode());
+    });
+
+</script>
+
+</body>
+</html>
